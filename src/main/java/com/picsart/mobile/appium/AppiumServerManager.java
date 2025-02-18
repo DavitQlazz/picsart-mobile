@@ -41,7 +41,7 @@ public class AppiumServerManager {
         if (service.isRunning()) {
             return service.getUrl().toString();
         }
-        return "http://127.0.0.1:4723/";
+        return "http://0.0.0.0:4723/";
     }
 
     private static String getAppiumFilePath() {

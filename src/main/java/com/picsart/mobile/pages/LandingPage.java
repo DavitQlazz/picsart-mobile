@@ -2,25 +2,21 @@ package com.picsart.mobile.pages;
 
 import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.support.FindBy;
 
 public class LandingPage extends BasePage {
 
-    @FindBy(xpath = "//*[@text='Accept All Cookies']")
+    @AndroidFindBy(xpath = "//*[@text='Accept All Cookies']")
+    @iOSXCUITFindBy(xpath = "//button[@id='onetrust-accept-btn-handler']")
     private WrappedElement acceptAllCookies;
-
-    @FindBy(xpath = "//*[@text='Log in']")
-    private WrappedElement loginBtn;
 
     public LandingPage(AppiumDriver driver) {
         super(driver);
     }
 
-    public void acceptCookiesIfExists() {
-        acceptAllCookies.clickIfExists();
-    }
-
-    public void clickLoginButton() {
-        loginBtn.click();
+    public void acceptCookies() {
+        acceptAllCookies.getByIndex(1).click();
     }
 }

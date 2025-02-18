@@ -7,10 +7,8 @@ import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
 import io.appium.java_client.remote.AutomationName;
-import io.appium.java_client.remote.SupportsContextSwitching;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +39,11 @@ public class DriverFactory {
         }
 
         if (runMode.equals("cloud")) {
-            caps = getCloudCapabilities();
+            if (platform.equals("ios")) {
+                caps = getCloudCapabilitiesIOS();
+            } else {
+                caps = getCloudCapabilitiesAndroid();
+            }
         }
 
         try {
@@ -52,37 +54,42 @@ public class DriverFactory {
             driver.set(platform.equals("ios")
                     ? new IOSDriver(new URL(serverUrl), caps)
                     : new AndroidDriver(new URL(serverUrl), caps));
-//            ((SupportsContextSwitching) driver.get()).context("WEBVIEW_chrome");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
     private static MutableCapabilities getAndroidCapabilities() {
-        UiAutomator2Options options = new UiAutomator2Options()
+        return new UiAutomator2Options()
                 .setPlatformName(Platform.ANDROID.name())
                 .setAutomationName(AutomationName.ANDROID_UIAUTOMATOR2)
                 .setAutoGrantPermissions(true)
                 .setNewCommandTimeout(Duration.ofSeconds(600))
                 .setNativeWebScreenshot(true);
-
-        // Additional Chrome-related capabilities
-//        options.setCapability("chromedriverAutodownload", true);
-//        options.setCapability("recreateChromeDriverSessions", true);
-        return options;
     }
 
     private static MutableCapabilities getIosCapabilities() {
         XCUITestOptions caps = new XCUITestOptions();
-        caps.setCapability("platformName", "iOS");
-        caps.setCapability("browserName", "Safari");
-        caps.setCapability("automationName", "XCUITest");
+//        caps.autoWebview();
+//        caps.launchWithIdb();
+//        caps.setUseNewWDA(false);
+//        caps.setCapability("startIWDP", true);
+//        caps.includeSafariInWebviews();
+        caps.setAutoWebview(false);
+        caps.withBrowserName("Safari");
+        caps.setAutomationName("XCUITest");
+        caps.safariIgnoreFraudWarning();
+        caps.safariIgnoreFraudWarning();
+        caps.includeSafariInWebviews();
+        caps.setDeviceName("iPhone 15 Pro");
+        caps.setPlatformName("iOS");
+        caps.setCapability("platformVersion", "17.4");
         caps.setNewCommandTimeout(Duration.ofSeconds(600));
         caps.autoWebview();
         return caps;
     }
 
-    private static MutableCapabilities getCloudCapabilities() {
+    private static MutableCapabilities getCloudCapabilitiesAndroid() {
         MutableCapabilities caps = new MutableCapabilities();
         HashMap<String, Object> bstackOptions = new HashMap<>();
         caps.setCapability("browserName", "chrome");
@@ -91,6 +98,18 @@ public class DriverFactory {
         bstackOptions.put("userName", "fortesting_AnMoR9");
         bstackOptions.put("accessKey", "yk1hRvjQjjpKSBRxcqpU");
         bstackOptions.put("consoleLogs", "info");
+        caps.setCapability("bstack:options", bstackOptions);
+        return caps;
+    }
+
+    private static MutableCapabilities getCloudCapabilitiesIOS() {
+        MutableCapabilities caps = new MutableCapabilities();
+        HashMap<String, Object> bstackOptions = new HashMap<>();
+        caps.setCapability("browserName", "chromium");
+        bstackOptions.put("osVersion", "17");
+        bstackOptions.put("deviceName", "iPhone 15 Pro Max");
+        bstackOptions.put("userName", "fortesting_AnMoR9");
+        bstackOptions.put("accessKey", "yk1hRvjQjjpKSBRxcqpU");
         caps.setCapability("bstack:options", bstackOptions);
         return caps;
     }

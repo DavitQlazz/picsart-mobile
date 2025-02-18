@@ -5,12 +5,13 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class WrappedElement implements WebElement {
     private final ElementLocator locator;
@@ -30,28 +31,27 @@ public class WrappedElement implements WebElement {
     private void clickWithRetry() {
         try {
             waitForElement();
-            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator.findElement()));
-            scrollIntoView(element);
+            WebElement element = wait.until(elementToBeClickable(locator.findElement()));
             element.click();
         } catch (ElementClickInterceptedException e) {
             throw new RuntimeException("Failed to click element after retries");
         }
     }
 
-    private List<WebElement> waitForElement() {
-        return wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath(xpath), 0));
+    private WebElement waitForElement() {
+        return wait.until(numberOfElementsToBeMoreThan(By.xpath(xpath), 0)).getFirst();
     }
 
     private boolean isDisplayed(WebElement element) {
         try {
-            return wait.until(ExpectedConditions.visibilityOf(element)).isDisplayed();
+            return wait.until(visibilityOf(element)).isDisplayed();
         } catch (TimeoutException e) {
             return false;
         }
     }
 
     private String getTextWithWait(WebElement element) {
-        wait.until(ExpectedConditions.visibilityOf(element));
+        wait.until(visibilityOf(element));
         return element.getText();
     }
 
@@ -59,7 +59,7 @@ public class WrappedElement implements WebElement {
         try {
             ((JavascriptExecutor) driver).executeScript(
                     "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
-            Thread.sleep(500); // Wait for scroll to complete
+            Thread.sleep(500);
         } catch (Exception e) {
             // Ignore scroll errors
         }
@@ -82,7 +82,7 @@ public class WrappedElement implements WebElement {
 
     public boolean waitForElementToDisappear() {
         try {
-            wait.until(ExpectedConditions.invisibilityOf(locator.findElement()));
+            wait.until(invisibilityOf(locator.findElement()));
             return true;
         } catch (Exception e) {
             return false;
@@ -90,7 +90,7 @@ public class WrappedElement implements WebElement {
     }
 
     public void scrollTo() {
-        scrollIntoView(waitForElement().getFirst());
+        scrollIntoView(waitForElement());
     }
 
     @Override
@@ -98,8 +98,9 @@ public class WrappedElement implements WebElement {
         clickWithRetry();
     }
 
-    public List<WebElement> getAll() {
-        return waitForElement();
+    public WebElement getByIndex(final int index) {
+        waitForElement();
+        return locator.findElements().get(index);
     }
 
     public void clickIfExists() {
@@ -108,10 +109,15 @@ public class WrappedElement implements WebElement {
         }
     }
 
+    public Integer count() {
+        waitForElement();
+        return locator.findElements().size();
+    }
+
     public boolean isElementExists() {
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(5))
-                    .until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath(xpath), 0));
+            new WebDriverWait(driver, Duration.ofSeconds(20))
+                    .until(numberOfElementsToBeMoreThan(By.xpath(xpath), 0));
             return true;
         } catch (TimeoutException ignored) {
         }
@@ -125,17 +131,17 @@ public class WrappedElement implements WebElement {
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
-        waitForElement().getFirst().sendKeys(keysToSend);
+        waitForElement().sendKeys(keysToSend);
     }
 
     @Override
     public void clear() {
-        waitForElement().getFirst().clear();
+        waitForElement().clear();
     }
 
     @Override
     public String getTagName() {
-        return "";
+        return waitForElement().getTagName();
     }
 
     @Override
@@ -145,12 +151,12 @@ public class WrappedElement implements WebElement {
 
     @Override
     public boolean isSelected() {
-        return waitForElement().getFirst().isSelected();
+        return waitForElement().isSelected();
     }
 
     @Override
     public boolean isEnabled() {
-        return waitForElement().getFirst().isEnabled();
+        return waitForElement().isEnabled();
     }
 
     @Override
@@ -162,7 +168,7 @@ public class WrappedElement implements WebElement {
     @Override
     public List<WebElement> findElements(By by) {
         ExpectedCondition<List<WebElement>> until = wait.until(driver ->
-                ExpectedConditions.numberOfElementsToBeMoreThan(by, 0));
+                numberOfElementsToBeMoreThan(by, 0));
         return until.apply(driver);
     }
 
@@ -174,13 +180,12 @@ public class WrappedElement implements WebElement {
 
     @Override
     public boolean isDisplayed() {
-        waitForElement().getFirst().isDisplayed();
-        return false;
+        return wait.until(visibilityOfElementLocated(By.xpath(xpath))).isDisplayed();
     }
 
     @Override
     public Point getLocation() {
-        return null;
+        return locator.findElement().getLocation();
     }
 
     @Override

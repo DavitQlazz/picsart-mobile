@@ -2,41 +2,55 @@ package com.picsart.mobile.pages;
 
 import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.support.FindBy;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 
 public class SearchPage extends BasePage {
 
-    @FindBy(xpath = "//*[@resource-id='filter_icon']")
+    @AndroidFindBy(xpath = "//*[@resource-id='filter_icon']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name='Filter']")
     private WrappedElement filterIcon;
 
-    @FindBy(xpath = "//*[@text='licenses-Personal-checkbox']")
+    @AndroidFindBy(xpath = "//*[@text='licenses-Personal-checkbox']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeSwitch[@name='licenses-Personal-checkbox']")
     private WrappedElement personalCheckbox;
 
-    @FindBy(xpath = "//*[starts-with(@resource-id, 'base_card_item')]")
+    @AndroidFindBy(xpath = "//*[starts-with(@resource-id, 'base_card_item')]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeImage[@value='blur']")
     private WrappedElement allAssets;
 
-    @FindBy(xpath = "//*[starts-with(@resource-id, 'base_card_item')]/android.view.View/android.widget.Image")
+    @AndroidFindBy(xpath = "//*[starts-with(@resource-id, 'base_card_item')]/android.view.View/android.widget.Image")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeAny[@value='blur']")
     private WrappedElement plusAssets;
 
-    @FindBy(xpath = "//android.view.View[@resource-id=\"__next\"]" +
+    @AndroidFindBy(xpath = "//android.view.View[@resource-id=\"__next\"]" +
             "/android.view.View[2]/android.view.View/android.view.View[1]/android.widget.Button")
+    @iOSXCUITFindBy(xpath = "//*[@data-testid='likeComponent']")
     private WrappedElement likeBtn;
 
-    @FindBy(xpath = "//android.view.View[@resource-id=\"__next\"]" +
-            "/android.view.View[2]/android.view.View/android.view.View[2]/android.widget.Button")
+    @AndroidFindBy(xpath = "//*[@data-testid='saved-to-collection']")
+    @iOSXCUITFindBy(xpath = "//*[@data-testid='saved-to-collection']")
     private WrappedElement saveBtn;
 
-    @FindBy(xpath = "//android.widget.Button[@text='Edit']")
+    @AndroidFindBy(xpath = "//android.widget.Button[@text='Edit']")
+    @iOSXCUITFindBy(xpath = "//*[@class='heading-editButtonHolder-0-2-66'] /button")
     private WrappedElement editBtn;
 
-    @FindBy(xpath = "//android.widget.Button[starts-with(@text, 'Sign in options title Sign in options description')]")
+    @AndroidFindBy(
+            xpath = "//android.widget.Button[starts-with(@text, 'Sign in options title Sign in options description')]")
+    @iOSXCUITFindBy(xpath = "//*[@data-testid='registration-overlay']")
     private WrappedElement signInPopup;
+
+    @AndroidFindBy(xpath = "//*[@package='com.android.vending']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeAny[@value='blur']")
+    private WrappedElement googlePlayStore;
 
     public SearchPage(AppiumDriver driver) {
         super(driver);
     }
 
     public SearchPage clickFilterIcon() {
+        switchToNativeViewIos();
         filterIcon.click();
         return this;
     }
@@ -47,7 +61,8 @@ public class SearchPage extends BasePage {
     }
 
     public SearchPage clickFirstImage() {
-        allAssets.getAll().getFirst().click();
+        allAssets.getByIndex(0).click();
+        switchToWebViewIos();
         return this;
     }
 
@@ -79,5 +94,9 @@ public class SearchPage extends BasePage {
 
     public boolean isEditButtonDisplayed() {
         return editBtn.isDisplayed();
+    }
+
+    public boolean isGooglePlayStoreDisplayed() {
+        return googlePlayStore.isDisplayed();
     }
 }
