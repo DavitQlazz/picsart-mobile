@@ -13,27 +13,29 @@ public class SearchTest extends BaseTest {
     SoftAssert softAssert = new SoftAssert();
 
     @Test
-    public void picasrtSearchFilter() {
+    public void picsartSearchFilter() {
         LandingPage landingPage = new LandingPage(driver);
         SearchPage searchPage = new SearchPage(driver);
 
         landingPage.openUrl("https://picsart.com/search");
 //        landingPage.acceptCookies();
-        searchPage.clickFilterIcon()
+        searchPage.clickFilterButton()
                 .clickPersonalCheckbox()
-                .clickFilterIcon()
+                .clickFilterButton()
                 .clickFirstImage();
         softAssert.assertTrue(searchPage.isLikeButtonDisplayed(), "Like button is not displayed");
         softAssert.assertTrue(searchPage.isSaveButtonDisplayed(), "Save button is not displayed");
         softAssert.assertTrue(searchPage.isEditButtonDisplayed(), "Edit button is not displayed");
         softAssert.assertAll();
-        searchPage.clickLikeIcon()
-                .goBackToSearchPage();
-        searchPage.clickFilterIcon()
+        searchPage.clickLikeButton();
+        assertTrue(searchPage.isSignInPopupDisplayed(), "Sign in popup is not displayed");
+        searchPage.goBackToSearchPage();
+        searchPage.clickFilterButton()
                 .clickPersonalCheckbox()
-                .clickFilterIcon()
+                .clickFilterButton()
                 .clickPlusAsset();
-        assertTrue(searchPage.isGooglePlayStoreDisplayed(), "Google Play Store is not displayed");
+        //Cannot check on iOS simulator
+        assertTrue(searchPage.isPlayStoreDisplayed(), "App Play Store is not displayed");
 
     }
 }

@@ -43,13 +43,13 @@ public class SearchPage extends BasePage {
 
     @AndroidFindBy(xpath = "//*[@package='com.android.vending']")
     @iOSXCUITFindBy(xpath = "//XCUIElementTypeAny[@value='blur']")
-    private WrappedElement googlePlayStore;
+    private WrappedElement playStore;
 
     public SearchPage(AppiumDriver driver) {
         super(driver);
     }
 
-    public SearchPage clickFilterIcon() {
+    public SearchPage clickFilterButton() {
         switchToNativeViewIos();
         filterIcon.click();
         return this;
@@ -66,7 +66,7 @@ public class SearchPage extends BasePage {
         return this;
     }
 
-    public SearchPage clickLikeIcon() {
+    public SearchPage clickLikeButton() {
         likeBtn.click();
         return this;
     }
@@ -96,7 +96,7 @@ public class SearchPage extends BasePage {
         return editBtn.isDisplayed();
     }
 
-    public boolean isGooglePlayStoreDisplayed() {
-        return googlePlayStore.isDisplayed();
+    public boolean isPlayStoreDisplayed() {
+        return playStore.isDisplayed();
     }
 }
