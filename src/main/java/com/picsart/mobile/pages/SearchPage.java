@@ -61,7 +61,7 @@ public class SearchPage extends BasePage {
     }
 
     public SearchPage clickFirstImage() {
-        allAssets.getByIndex(0).click();
+        allAssets.click();
         switchToWebViewIos();
         return this;
     }

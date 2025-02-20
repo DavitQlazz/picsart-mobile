@@ -3,61 +3,45 @@ package com.picsart.mobile.element;
 import io.appium.java_client.AppiumDriver;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
-public class WrappedElement implements WebElement {
+public class WrappedElement extends RemoteWebElement implements WebElement {
     private final ElementLocator locator;
     private final WebDriverWait wait;
     private final AppiumDriver driver;
-    private final String xpath;
-    private WebElement cachedElement;
+    private final WebElement element;
+    private final By by;
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration POLLING_TIME = Duration.ofMillis(500);
-    private static final int MAX_RETRIES = 2;
 
-    public WrappedElement(ElementLocator locator, AppiumDriver driver, String xpath) {
+    
+    public WrappedElement(WebElement element, ElementLocator locator, AppiumDriver driver, By by) {
+        this.element = element;
         this.locator = locator;
         this.driver = driver;
-        this.xpath = xpath;
+        this.by = by;
         this.wait = new WebDriverWait(driver, DEFAULT_TIMEOUT, POLLING_TIME);
     }
 
-//    private WebElement getElement() {
-//        return wait.until(numberOfElementsToBeMoreThan(By.xpath(xpath), 0)).getFirst();
-//    }
-
     private WebElement getElement() {
+        WebElement cachedElement;
             try {
-                for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-                    try {
-                        // Get fresh element reference to avoid stale element exception
-                        cachedElement = wait.until(refreshed(presenceOfElementLocated(By.xpath(xpath))));
-                        return cachedElement;
-                    } catch (StaleElementReferenceException | ElementClickInterceptedException e) {
-                        if (attempt == MAX_RETRIES) throw e;
-                        resetCachedElement();
-                    }
-                }
-            } catch (NoSuchElementException e) {
-                throw new NoSuchElementException(
-                        "Cannot find element with locator: " + xpath, e);
+                cachedElement = wait.until(refreshed(presenceOfElementLocated(by)));
+                return cachedElement;
+            } catch (StaleElementReferenceException | ElementClickInterceptedException | NoSuchElementException e) {
+                throw new NoSuchElementException("Cannot find element with locator: " + by, e);
             }
-        return cachedElement;
-    }
+        }
 
-    private void resetCachedElement() {
-        cachedElement = null;
-    }
 
     private String getTextWithWait(WebElement element) {
         wait.until(visibilityOf(element));
@@ -99,16 +83,15 @@ public class WrappedElement implements WebElement {
     }
 
     public void scrollTo() {
-        scrollIntoView(getElement());
+        scrollIntoView(element);
     }
 
     @Override
     public void click() {
-        getElement().click();
+        element.click();
     }
 
     public WebElement getByIndex(final int index) {
-        getElement();
         return locator.findElements().get(index);
     }
 
@@ -119,14 +102,13 @@ public class WrappedElement implements WebElement {
     }
 
     public Integer count() {
-        getElement();
         return locator.findElements().size();
     }
 
     public boolean isElementExists() {
         try {
             new WebDriverWait(driver, Duration.ofSeconds(20))
-                    .until(numberOfElementsToBeMoreThan(By.xpath(xpath), 0));
+                    .until(numberOfElementsToBeMoreThan(by, 0));
             return true;
         } catch (TimeoutException ignored) {
         }
@@ -140,17 +122,17 @@ public class WrappedElement implements WebElement {
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
-        getElement().sendKeys(keysToSend);
+        element.sendKeys(keysToSend);
     }
 
     @Override
     public void clear() {
-        getElement().clear();
+        element.clear();
     }
 
     @Override
     public String getTagName() {
-        return getElement().getTagName();
+        return element.getTagName();
     }
 
     @Override
@@ -160,22 +142,21 @@ public class WrappedElement implements WebElement {
 
     @Override
     public boolean isSelected() {
-        return getElement().isSelected();
+        return element.isSelected();
     }
 
     @Override
     public boolean isEnabled() {
-        return getElement().isEnabled();
+        return element.isEnabled();
     }
 
 
     public boolean isClickable() {
-        return wait.until(elementToBeClickable(getElement())).isDisplayed();
+        return wait.until(elementToBeClickable(element)).isDisplayed();
     }
 
     @Override
     public String getText() {
-        getElement();
         return getTextWithWait(locator.findElement());
     }
 
@@ -188,37 +169,11 @@ public class WrappedElement implements WebElement {
 
     @Override
     public WebElement findElement(By by) {
-        getElement();
         return driver.findElement(by);
     }
 
     @Override
     public boolean isDisplayed() {
-        return wait.until(visibilityOfElementLocated(By.xpath(xpath))).isDisplayed();
-    }
-
-    @Override
-    public Point getLocation() {
-        return locator.findElement().getLocation();
-    }
-
-    @Override
-    public Dimension getSize() {
-        return null;
-    }
-
-    @Override
-    public Rectangle getRect() {
-        return null;
-    }
-
-    @Override
-    public String getCssValue(String propertyName) {
-        return "";
-    }
-
-    @Override
-    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        return null;
+        return wait.until(visibilityOfElementLocated(by)).isDisplayed();
     }
 }

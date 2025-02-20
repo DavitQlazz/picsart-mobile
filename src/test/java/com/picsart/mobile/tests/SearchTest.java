@@ -18,7 +18,7 @@ public class SearchTest extends BaseTest {
         SearchPage searchPage = new SearchPage(driver);
 
         landingPage.openUrl("https://picsart.com/search");
-//        landingPage.acceptCookies();
+        landingPage.acceptCookies();
         searchPage.clickFilterButton()
                 .clickPersonalCheckbox()
                 .clickFilterButton()

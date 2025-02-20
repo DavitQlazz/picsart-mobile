@@ -70,15 +70,11 @@ public class DriverFactory {
 
     private static MutableCapabilities getIosCapabilities() {
         XCUITestOptions caps = new XCUITestOptions();
-//        caps.autoWebview();
-//        caps.launchWithIdb();
-//        caps.setUseNewWDA(false);
-//        caps.setCapability("startIWDP", true);
-//        caps.includeSafariInWebviews();
         caps.setAutoWebview(false);
+        caps.noReset();
+        caps.setCapability("webviewConnectRetries", 3);
         caps.withBrowserName("Safari");
         caps.setAutomationName("XCUITest");
-        caps.safariIgnoreFraudWarning();
         caps.safariIgnoreFraudWarning();
         caps.includeSafariInWebviews();
         caps.setDeviceName("iPhone 15 Pro");
@@ -105,7 +101,7 @@ public class DriverFactory {
     private static MutableCapabilities getCloudCapabilitiesIOS() {
         MutableCapabilities caps = new MutableCapabilities();
         HashMap<String, Object> bstackOptions = new HashMap<>();
-        caps.setCapability("browserName", "chromium");
+        caps.setCapability("browserName", "safari");
         bstackOptions.put("osVersion", "17");
         bstackOptions.put("deviceName", "iPhone 15 Pro Max");
         bstackOptions.put("userName", "fortesting_AnMoR9");
