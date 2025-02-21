@@ -19,7 +19,9 @@ public class SearchTest extends BaseTest {
 
         landingPage.openUrl("https://picsart.com/search");
         landingPage.acceptCookies();
-        searchPage.clickFilterButton()
+        searchPage
+                .closeGoogleSignInPopup()
+                .clickFilterButton()
                 .clickPersonalCheckbox()
                 .clickFilterButton()
                 .clickFirstImage();
@@ -30,6 +32,7 @@ public class SearchTest extends BaseTest {
         searchPage.clickLikeButton();
         assertTrue(searchPage.isSignInPopupDisplayed(), "Sign in popup is not displayed");
         searchPage.goBackToSearchPage();
+        searchPage.closeGoogleSignInPopup();
         searchPage.clickFilterButton()
                 .clickPersonalCheckbox()
                 .clickFilterButton()

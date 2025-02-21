@@ -1,11 +1,13 @@
 package com.picsart.mobile.element;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.pagefactory.Widget;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -14,33 +16,23 @@ import java.util.Objects;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
-public class WrappedElement extends RemoteWebElement implements WebElement {
+@Slf4j
+public class WrappedElement extends Widget implements WebElement {
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
+    private static final Duration POLLING_TIME = Duration.ofMillis(500);
     private final ElementLocator locator;
     private final WebDriverWait wait;
     private final AppiumDriver driver;
     private final WebElement element;
-    private final By by;
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
-    private static final Duration POLLING_TIME = Duration.ofMillis(500);
 
     
-    public WrappedElement(WebElement element, ElementLocator locator, AppiumDriver driver, By by) {
+    public WrappedElement(WebElement element, ElementLocator locator, AppiumDriver driver) {
+        super(element);
         this.element = element;
         this.locator = locator;
         this.driver = driver;
-        this.by = by;
         this.wait = new WebDriverWait(driver, DEFAULT_TIMEOUT, POLLING_TIME);
     }
-
-    private WebElement getElement() {
-        WebElement cachedElement;
-            try {
-                cachedElement = wait.until(refreshed(presenceOfElementLocated(by)));
-                return cachedElement;
-            } catch (StaleElementReferenceException | ElementClickInterceptedException | NoSuchElementException e) {
-                throw new NoSuchElementException("Cannot find element with locator: " + by, e);
-            }
-        }
 
 
     private String getTextWithWait(WebElement element) {
@@ -88,7 +80,27 @@ public class WrappedElement extends RemoteWebElement implements WebElement {
 
     @Override
     public void click() {
-        element.click();
+        log.info("Click if Exists");
+        getElement().click();
+    }
+
+    public WebElement getElement() {
+        FluentWait<AppiumDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(8))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class);
+
+        return wait.until(driver -> {
+            try {
+                WebElement el = visibilityOf(element).apply(driver);
+                log.info("Element found: {}", element);
+                return el;
+            } catch (StaleElementReferenceException e) {
+                log.info("Encountered StaleElementReferenceException. Retrying...");
+                return null; // Returning null forces FluentWait to retry
+            }
+        });
     }
 
     public WebElement getByIndex(final int index) {
@@ -107,10 +119,9 @@ public class WrappedElement extends RemoteWebElement implements WebElement {
 
     public boolean isElementExists() {
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(20))
-                    .until(numberOfElementsToBeMoreThan(by, 0));
+            wait.until(elementToBeClickable(locator.findElement()));
             return true;
-        } catch (TimeoutException ignored) {
+        } catch (TimeoutException | NoSuchElementException ignored) {
         }
         return false;
     }
@@ -174,6 +185,31 @@ public class WrappedElement extends RemoteWebElement implements WebElement {
 
     @Override
     public boolean isDisplayed() {
-        return wait.until(visibilityOfElementLocated(by)).isDisplayed();
+        return getElement().isDisplayed();
+    }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
+
+    @Override
+    public Dimension getSize() {
+        return null;
+    }
+
+    @Override
+    public Rectangle getRect() {
+        return null;
+    }
+
+    @Override
+    public String getCssValue(String propertyName) {
+        return "";
+    }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        return null;
     }
 }
