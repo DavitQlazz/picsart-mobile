@@ -5,6 +5,7 @@ import com.picsart.mobile.element.IOSBy;
 import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -86,7 +87,7 @@ public class SearchPage extends BasePage<SearchPage> {
 
     public SearchPage closeGoogleSignInPopup() {
         switchToWebView();
-        googleSignInPopupCloseIcon.clickIfExists();
+        googleSignInPopupCloseIcon.click();
         return this;
     }
 
@@ -94,6 +95,7 @@ public class SearchPage extends BasePage<SearchPage> {
         driver.navigate().back();
     }
 
+    @Step
     public boolean isSignInPopupDisplayed() {
         return signInPopup.isDisplayed();
     }
@@ -111,8 +113,12 @@ public class SearchPage extends BasePage<SearchPage> {
     }
 
     public boolean isPlayStoreDisplayed() {
-        String name = ((IOSDriver) driver).queryAppState("com.picsart.studio").name();
-        log.info("Current activity: {}", name);
-        return ((IOSDriver) driver).queryAppState("com.picsart.studio").name().equalsIgnoreCase("RUNNING");
+        wait.until(driver -> {
+            return ((IOSDriver) driver)
+                    .queryAppState("com.apple.AppStore")
+                    .name()
+                    .equalsIgnoreCase("RUNNING_IN_BACKGROUND_SUSPENDED");
+        });
+        return false;
     }
 }

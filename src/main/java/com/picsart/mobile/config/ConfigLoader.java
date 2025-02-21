@@ -1,22 +1,52 @@
 package com.picsart.mobile.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
-public class ConfigLoader {
-    private static final Properties properties = new Properties();
+import org.aeonbits.owner.Config;
 
-    static {
-        try {
-            FileInputStream file = new FileInputStream("src/test/resources/config.properties");
-            properties.load(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+import static org.aeonbits.owner.Config.*;
 
-    public static String getProperty(String key) {
-        return properties.getProperty(key);
-    }
+// Order set by priority
+@Sources({
+        "system:env",
+        "system:properties",
+        "classpath:config.properties"
+})
+@LoadPolicy(LoadType.MERGE)
+public interface ConfigLoader extends Config {
+
+    @Key("cloud.server")
+    @DefaultValue("https://hub-cloud.browserstack.com/wd/hub")
+    String cloudServer();
+
+    @Key("local.server")
+    @DefaultValue("http://0.0.0.0:4723/")
+    String localServer();
+
+    @Key("base.url")
+    @DefaultValue("https://picsart.com")
+    String baseUrl();
+
+    @Key("android.browser")
+    @DefaultValue("chrome")
+    String androidBrowser();
+
+    @Key("ios.browser")
+    @DefaultValue("safari")
+    String iosBrowser();
+
+    @Key("timeout.long")
+    @DefaultValue("30")
+    int longTimeout();
+
+    @Key("timeout.short")
+    @DefaultValue("5")
+    int shortTimeout();
+
+    @Key("platform")
+    @DefaultValue("android")
+    String platform();
+
+    @Key("runMode")
+    @DefaultValue("local")
+    String runMode();
 }

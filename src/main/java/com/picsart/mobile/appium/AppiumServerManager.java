@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
 
+import static com.picsart.mobile.driver.DriverFactory.config;
+
 @Slf4j
 public class AppiumServerManager {
     private static AppiumDriverLocalService service;
@@ -24,7 +26,7 @@ public class AppiumServerManager {
                 .withArgument(GeneralServerFlag.USE_DRIVERS, "chromium,uiautomator2,xcuitest")
                 .withArgument(GeneralServerFlag.SESSION_OVERRIDE)
                 .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
-                .withTimeout(Duration.ofSeconds(30))
+                .withTimeout(Duration.ofSeconds(config.longTimeout()))
                 .usingAnyFreePort()
                 .build();
 //        service.start();
@@ -41,7 +43,7 @@ public class AppiumServerManager {
         if (service.isRunning()) {
             return service.getUrl().toString();
         }
-        return "http://0.0.0.0:4723/";
+        return config.localServer();
     }
 
     private static String getAppiumFilePath() {

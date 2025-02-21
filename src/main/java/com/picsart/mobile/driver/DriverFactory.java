@@ -4,12 +4,11 @@ import com.picsart.mobile.config.ConfigLoader;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
-import io.appium.java_client.android.options.context.SupportsChromeOptionsOption;
-import io.appium.java_client.android.options.other.SupportsUserProfileOption;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
 import io.appium.java_client.remote.AutomationName;
 import io.appium.java_client.safari.options.SafariOptions;
+import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 
@@ -19,10 +18,11 @@ import java.time.Duration;
 import java.util.HashMap;
 
 import static com.picsart.mobile.appium.AppiumServerManager.getAppiumServerUrl;
-import static io.appium.java_client.android.options.context.SupportsChromeOptionsOption.*;
+import static com.picsart.mobile.config.ConfigurationManager.configuration;
 
 public class DriverFactory {
     private static final ThreadLocal<AppiumDriver> driver = new ThreadLocal<>();
+    public static ConfigLoader config = configuration();
 
     public static AppiumDriver getDriver() {
         if (driver.get() == null) {
@@ -32,18 +32,16 @@ public class DriverFactory {
     }
 
     private static void setupDriver() {
-        String platform = System.getProperty("platform", "android");
-        String runMode = System.getProperty("runMode", "local");
 
         MutableCapabilities caps;
-        if (platform.equals("ios")) {
+        if (config.platform().equalsIgnoreCase(Platform.IOS.name())) {
             caps = getIosCapabilities();
         } else {
             caps = getAndroidCapabilities();
         }
 
-        if (runMode.equals("cloud")) {
-            if (platform.equals("ios")) {
+        if (config.runMode().equals("cloud")) {
+            if (config.platform().equalsIgnoreCase(Platform.IOS.name())) {
                 caps = getCloudCapabilitiesIOS();
             } else {
                 caps = getCloudCapabilitiesAndroid();
@@ -51,11 +49,9 @@ public class DriverFactory {
         }
 
         try {
-            String serverUrl = runMode.equals("cloud")
-                    ? ConfigLoader.getProperty("cloud.url")
-                    : getAppiumServerUrl();
+            String serverUrl = config.runMode().equals("cloud") ? config.cloudServer() : getAppiumServerUrl();
 
-            driver.set(platform.equals("ios")
+            driver.set(config.platform().equals("ios")
                     ? new IOSDriver(new URL(serverUrl), caps)
                     : new AndroidDriver(new URL(serverUrl), caps));
         } catch (MalformedURLException e) {
@@ -68,6 +64,7 @@ public class DriverFactory {
                 .setPlatformName(Platform.ANDROID.name())
                 .setAutomationName(AutomationName.ANDROID_UIAUTOMATOR2)
                 .setAutoGrantPermissions(true)
+                .withBrowserName(config.androidBrowser())
                 .setNewCommandTimeout(Duration.ofSeconds(600))
                 .setNativeWebScreenshot(true);
     }
@@ -78,7 +75,7 @@ public class DriverFactory {
         caps.setFullReset(false);
         caps.setNoReset(false);
         caps.setCapability("webviewConnectRetries", 3);
-        caps.withBrowserName("Safari");
+        caps.withBrowserName(config.iosBrowser());
         caps.setAutomationName("XCUITest");
         caps.safariIgnoreFraudWarning();
         caps.includeSafariInWebviews();
@@ -99,7 +96,7 @@ public class DriverFactory {
     private static MutableCapabilities getCloudCapabilitiesAndroid() {
         MutableCapabilities caps = new MutableCapabilities();
         HashMap<String, Object> bstackOptions = new HashMap<>();
-        caps.setCapability("browserName", "chrome");
+        caps.setCapability("browserName", config.androidBrowser());
         bstackOptions.put("osVersion", "13.0");
         bstackOptions.put("deviceName", "Samsung Galaxy S23");
         bstackOptions.put("userName", "fortesting_AnMoR9");
@@ -111,7 +108,7 @@ public class DriverFactory {
 
     private static MutableCapabilities getCloudCapabilitiesIOS() {
         MutableCapabilities caps = new MutableCapabilities();
-        caps.setCapability("browserName", "safari");
+        caps.setCapability("browserName", config.iosBrowser());
         caps.setCapability("appium:safariOptions", new SafariOptions().setFullReset(true).setNoReset(false));
 
 //        HashMap<String, Object> prefs = new HashMap<>();
