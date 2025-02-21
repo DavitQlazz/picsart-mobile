@@ -4,6 +4,7 @@ import com.picsart.mobile.element.AndroidBy;
 import com.picsart.mobile.element.IOSBy;
 import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class LandingPage extends BasePage<LandingPage> {
     public LandingPage(AppiumDriver driver) {
         super(driver);
     }
-
+    @Step
     public void acceptCookies() {
         switchToNativeView();
         acceptAllCookies.clickIfExists();

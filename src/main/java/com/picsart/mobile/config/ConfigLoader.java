@@ -39,8 +39,12 @@ public interface ConfigLoader extends Config {
     int longTimeout();
 
     @Key("timeout.short")
-    @DefaultValue("5")
+    @DefaultValue("8")
     int shortTimeout();
+
+    @Key("timeout.newCommand")
+    @DefaultValue("8")
+    int newCommandTimeout();
 
     @Key("platform")
     @DefaultValue("android")

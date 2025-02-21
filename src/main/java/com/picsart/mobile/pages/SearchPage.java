@@ -58,39 +58,46 @@ public class SearchPage extends BasePage<SearchPage> {
         super(driver);
     }
 
+    @Step
     public SearchPage clickFilterButton() {
         switchToNativeView();
         filterIcon.click();
         return this;
     }
 
+    @Step
     public SearchPage clickPersonalCheckbox() {
         personalCheckbox.click();
         return this;
     }
 
+    @Step
     public SearchPage clickFirstImage() {
         allAssets.click();
         switchToWebView();
         return this;
     }
 
+    @Step
     public SearchPage clickLikeButton() {
         likeBtn.click();
         return this;
     }
 
+    @Step
     public SearchPage clickPlusAsset() {
         plusAssets.click();
         return this;
     }
 
+    @Step
     public SearchPage closeGoogleSignInPopup() {
         switchToWebView();
         googleSignInPopupCloseIcon.click();
         return this;
     }
 
+    @Step
     public void goBackToSearchPage() {
         driver.navigate().back();
     }
@@ -100,25 +107,26 @@ public class SearchPage extends BasePage<SearchPage> {
         return signInPopup.isDisplayed();
     }
 
+    @Step
     public boolean isLikeButtonDisplayed() {
         return likeBtn.isDisplayed();
     }
 
+    @Step
     public boolean isSaveButtonDisplayed() {
         return saveBtn.isDisplayed();
     }
 
+    @Step
     public boolean isEditButtonDisplayed() {
         return editBtn.isDisplayed();
     }
 
+    @Step
     public boolean isPlayStoreDisplayed() {
-        wait.until(driver -> {
-            return ((IOSDriver) driver)
-                    .queryAppState("com.apple.AppStore")
-                    .name()
-                    .equalsIgnoreCase("RUNNING_IN_BACKGROUND_SUSPENDED");
-        });
-        return false;
+        return wait.until(driver -> ((IOSDriver) driver)
+                .queryAppState("com.apple.AppStore")
+                .name()
+                .equalsIgnoreCase("RUNNING_IN_BACKGROUND_SUSPENDED"));
     }
 }

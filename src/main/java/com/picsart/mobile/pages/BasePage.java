@@ -6,6 +6,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.SupportsContextSwitching;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,7 +29,7 @@ public class BasePage<T extends BasePage<T>> {
         this.shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
         PageFactory.initElements(new WrappedElementDecorator(driver), this);
     }
-
+    @Step
     public void openUrl(String url) {
         driver.get(url);
     }

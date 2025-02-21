@@ -14,12 +14,15 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+import static com.picsart.mobile.driver.DriverFactory.config;
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 @Slf4j
 public class WrappedElement extends Widget implements WebElement {
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
-    private static final Duration POLLING_TIME = Duration.ofMillis(500);
+    private static final Duration DEFAULT_TIMEOUT = ofSeconds(config.longTimeout());
+    private static final Duration POLLING_TIME = ofMillis(500);
     private final ElementLocator locator;
     private final WebDriverWait wait;
     private final AppiumDriver driver;
@@ -86,8 +89,8 @@ public class WrappedElement extends Widget implements WebElement {
 
     public WebElement getElement() {
         FluentWait<AppiumDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(8))
-                .pollingEvery(Duration.ofMillis(500))
+                .withTimeout(DEFAULT_TIMEOUT)
+                .pollingEvery(POLLING_TIME)
                 .ignoring(StaleElementReferenceException.class)
                 .ignoring(NoSuchElementException.class);
 

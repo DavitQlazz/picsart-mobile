@@ -2,13 +2,11 @@ package com.picsart.mobile.base;
 
 import com.picsart.mobile.appium.AppiumServerManager;
 import com.picsart.mobile.driver.DriverFactory;
+import com.picsart.mobile.listeners.TestListener;
 import io.appium.java_client.AppiumDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.*;
 
-//@Listeners(TestListener.class)
+@Listeners(TestListener.class)
 public class BaseTest {
     protected AppiumDriver driver;
 
