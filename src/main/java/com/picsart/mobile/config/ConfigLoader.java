@@ -14,15 +14,15 @@ import static org.aeonbits.owner.Config.*;
 @LoadPolicy(LoadType.MERGE)
 public interface ConfigLoader extends Config {
 
-    @Key("cloud.server")
+    @Key("browserstack.server")
     @DefaultValue("https://hub-cloud.browserstack.com/wd/hub")
     String cloudServer();
 
-    @Key("local.server")
+    @Key("local.appium.server")
     @DefaultValue("http://0.0.0.0:4723/")
     String localServer();
 
-    @Key("base.url")
+    @Key("app.base.url")
     @DefaultValue("https://picsart.com")
     String baseUrl();
 
@@ -62,13 +62,13 @@ public interface ConfigLoader extends Config {
     @DefaultValue("local")
     String runMode();
 
-    // Export to your env the Browserstack credentials as "BROWSERSTACK_USERNAME" and "BROWSERSTACK_ACCESSKEY"
+    // Add to ENV Browserstack credentials as "BROWSERSTACK_USERNAME" and "BROWSERSTACK_ACCESSKEY"
 
     @Key("BROWSERSTACK_USERNAME")
-    @DefaultValue("")
+    @DefaultValue("dummy_username")
     String bsUsername();
 
     @Key("BROWSERSTACK_ACCESSKEY")
-    @DefaultValue("")
+    @DefaultValue("dummy_accesskey")
     String accessKey();
 }

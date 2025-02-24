@@ -6,7 +6,6 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
-import io.appium.java_client.remote.AutomationName;
 import io.appium.java_client.safari.options.SafariOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
@@ -18,6 +17,8 @@ import java.util.HashMap;
 
 import static com.picsart.mobile.appium.AppiumServerManager.getAppiumServerUrl;
 import static com.picsart.mobile.config.ConfigurationManager.configuration;
+import static io.appium.java_client.remote.AutomationName.ANDROID_UIAUTOMATOR2;
+import static io.appium.java_client.remote.AutomationName.IOS_XCUI_TEST;
 import static java.time.Duration.ofSeconds;
 
 @Slf4j
@@ -63,7 +64,7 @@ public class DriverFactory {
     private static MutableCapabilities getAndroidCapabilities() {
         return new UiAutomator2Options()
                 .setPlatformName(Platform.ANDROID.name())
-                .setAutomationName(AutomationName.ANDROID_UIAUTOMATOR2)
+                .setAutomationName(ANDROID_UIAUTOMATOR2)
                 .setAutoGrantPermissions(true)
                 .withBrowserName(config.androidBrowser())
                 .setNewCommandTimeout(ofSeconds(config.newCommandTimeout()))
@@ -78,7 +79,7 @@ public class DriverFactory {
         caps.usePrebuiltWda();
         caps.setCapability("webviewConnectRetries", 3);
         caps.withBrowserName(config.iosBrowser());
-        caps.setAutomationName("XCUITest");
+        caps.setAutomationName(IOS_XCUI_TEST);
         caps.safariIgnoreFraudWarning();
         caps.includeSafariInWebviews();
         caps.setCapability("startIWDP", true);
@@ -95,11 +96,12 @@ public class DriverFactory {
     }
 
     private static MutableCapabilities getCloudCapabilitiesAndroid() {
-        MutableCapabilities caps = new MutableCapabilities();
+        UiAutomator2Options caps = new UiAutomator2Options();
+        caps.setAutomationName(ANDROID_UIAUTOMATOR2);
         HashMap<String, Object> bstackOptions = new HashMap<>();
         caps.setCapability("browserName", config.androidBrowser());
         bstackOptions.put("osVersion", "13.0");
-        bstackOptions.put("deviceName", "Samsung Galaxy S23");
+        bstackOptions.put("deviceName", "Samsung Galaxy S23 Ultra");
         bstackOptions.put("userName", config.bsUsername());
         bstackOptions.put("accessKey", config.accessKey());
         bstackOptions.put("consoleLogs", "info");

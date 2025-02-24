@@ -14,6 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Set;
 
+import static com.picsart.mobile.conditions.MobileExpectedConditions.isAndroidActivityEquals;
+import static com.picsart.mobile.conditions.MobileExpectedConditions.isIosBundleStateEquals;
 import static com.picsart.mobile.driver.DriverFactory.config;
 
 @Slf4j
@@ -21,6 +23,7 @@ public class BasePage {
     protected AppiumDriver driver;
     protected WebDriverWait wait;
     protected WebDriverWait shortWait;
+    protected String baseUrl = config.baseUrl();
 
     public BasePage(AppiumDriver driver) {
         this.driver = driver;
@@ -71,21 +74,18 @@ public class BasePage {
         } else if (driver instanceof AndroidDriver) {
             ((SupportsContextSwitching) driver).context("NATIVE_APP");
         }
+        log.info("Switched to native view");
     }
 
     private boolean isAppStoreDisplayed() {
-        return wait.until(driver -> ((IOSDriver) driver)
-                .queryAppState("com.apple.AppStore")
-                .name()
-                .equalsIgnoreCase("RUNNING_IN_BACKGROUND_SUSPENDED"));
+        return wait.until(driver ->
+                isIosBundleStateEquals("com.apple.AppStore", "RUNNING_IN_FOREGROUND")
+                        .apply(driver));
     }
 
     private boolean isPlayStoreDisplayed() {
-        return wait.until(driver -> {
-            String activity = ((AndroidDriver) driver).currentActivity();
-            assert activity != null;
-            return activity.contains("com.google.android.finsky");
-        });
+        return wait.until(driver ->
+                isAndroidActivityEquals("com.google.android.finsky").apply(driver));
     }
 
     public boolean isStoreDisplayed() {

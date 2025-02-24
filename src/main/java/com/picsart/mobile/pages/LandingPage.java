@@ -15,6 +15,11 @@ public class LandingPage extends BasePage {
     public LandingPage(AppiumDriver driver) {
         super(driver);
     }
+
+    @Step
+    public void open() {
+        openUrl(baseUrl + "/search");
+    }
     @Step
     public void acceptCookies() {
         switchToNativeView();

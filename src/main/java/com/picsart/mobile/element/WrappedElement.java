@@ -28,7 +28,7 @@ public class WrappedElement extends Widget implements WebElement {
     private final AppiumDriver driver;
     private final WebElement element;
 
-    
+
     public WrappedElement(WebElement element, ElementLocator locator, AppiumDriver driver) {
         super(element);
         this.element = element;
@@ -40,8 +40,9 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public void click() {
-        log.info("Click if Exists");
-        getElement().click();
+        WebElement el = getElement();
+        log.info("Clicking element: {}", el);
+        el.click();
     }
 
     public WebElement getElement() {
@@ -104,27 +105,27 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public String getTagName() {
-        return element.getTagName();
+        return getElement().getTagName();
     }
 
     @Override
     public @Nullable String getAttribute(String name) {
-        return "";
+        return getElement().getDomAttribute(name);
     }
 
     @Override
     public boolean isSelected() {
-        return element.isSelected();
+        return getElement().isSelected();
     }
 
     @Override
     public boolean isEnabled() {
-        return element.isEnabled();
+        return getElement().isEnabled();
     }
 
 
     public boolean isClickable() {
-        return wait.until(elementToBeClickable(element)).isDisplayed();
+        return wait.until(elementToBeClickable(getElement())).isDisplayed();
     }
 
     @Override

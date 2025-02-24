@@ -17,7 +17,7 @@ public class SearchTest extends BaseTest {
         LandingPage landingPage = new LandingPage(driver);
         SearchPage searchPage = new SearchPage(driver);
 
-        landingPage.openUrl("https://picsart.com/search");
+        landingPage.open();
         landingPage.acceptCookies();
         searchPage
                 .closeGoogleSignInPopup()
@@ -37,7 +37,6 @@ public class SearchTest extends BaseTest {
                 .clickPersonalCheckbox()
                 .clickFilterButton()
                 .clickPlusAsset();
-        //Cannot check on iOS simulator
         assertTrue(searchPage.isStoreDisplayed(), "The App/Play Store is not displayed");
 
     }

@@ -22,8 +22,7 @@ public class WrappedElementDecorator extends AppiumFieldDecorator {
         super(driver, Duration.ofSeconds(30));
         this.driver = driver;
         String platform = driver.getCapabilities().getPlatformName().name();
-        String automationName =
-                driver.getCapabilities().getCapability("automationName").toString();
+        String automationName = driver.getCapabilities().getCapability("automationName").toString();
         this.defaultBuilder = new WrappedElementByBuilder(platform, automationName);
     }
 
