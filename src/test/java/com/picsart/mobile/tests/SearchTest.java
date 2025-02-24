@@ -17,7 +17,7 @@ public class SearchTest extends BaseTest {
 
     @Test
     @Feature("Search")
-    @Description("Verify that search page filter functionality.")
+    @Description("Verify search page filter functionality.")
     public void picsartSearchFilter() {
         LandingPage landingPage = new LandingPage(driver);
         SearchPage searchPage = new SearchPage(driver);
