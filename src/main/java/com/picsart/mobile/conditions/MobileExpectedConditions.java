@@ -68,7 +68,7 @@ public class MobileExpectedConditions {
             public Boolean apply(WebDriver driver) {
                 if (!(driver instanceof IOSDriver iosDriver)) {
                     log.error("Expected IOSDriver but got: {}", driver.getClass().getSimpleName());
-                    throw new IllegalStateException("AppBackgroundSuspendedCondition can only be used with an IOSDriver.");
+                    throw new IllegalStateException("App condition can only be used with an IOSDriver.");
                 }
 
                 ApplicationState state = iosDriver.queryAppState(bundleId);
