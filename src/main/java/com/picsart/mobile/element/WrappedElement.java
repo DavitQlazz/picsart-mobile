@@ -1,5 +1,6 @@
 package com.picsart.mobile.element;
 
+import com.picsart.mobile.conditions.MobileExpectedConditions;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.Widget;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -46,22 +46,7 @@ public class WrappedElement extends Widget implements WebElement {
     }
 
     public WebElement getElement() {
-        FluentWait<AppiumDriver> wait = new FluentWait<>(driver)
-                .withTimeout(DEFAULT_TIMEOUT)
-                .pollingEvery(POLLING_TIME)
-                .ignoring(StaleElementReferenceException.class)
-                .ignoring(NoSuchElementException.class);
-
-        return wait.until(driver -> {
-            try {
-                WebElement el = visibilityOf(element).apply(driver);
-                log.info("Element found: {}", element);
-                return el;
-            } catch (StaleElementReferenceException | TimeoutException e) {
-                log.info("Element not found: {}", element);
-                return null; // Returning null forces FluentWait to retry
-            }
-        });
+        return MobileExpectedConditions.waitForElementVisibility(driver, element, DEFAULT_TIMEOUT, POLLING_TIME);
     }
 
     public WebElement getByIndex(final int index) {

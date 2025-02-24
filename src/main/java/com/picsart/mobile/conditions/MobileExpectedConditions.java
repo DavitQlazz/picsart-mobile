@@ -1,11 +1,16 @@
 package com.picsart.mobile.conditions;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.appmanagement.ApplicationState;
 import io.appium.java_client.ios.IOSDriver;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+
+import java.time.Duration;
 
 @Slf4j
 public class MobileExpectedConditions {
@@ -81,6 +86,38 @@ public class MobileExpectedConditions {
                 return "App '" + bundleId + "' to be in" + state + " state.";
             }
         };
-
     }
+
+    /**
+     * Wait for the element to be visible. If the element is not visible,
+     * this method will wait until the element is visible or the timeout
+     * is reached.
+     *
+     * @param driver     the driver to use
+     * @param element    the element to wait for
+     * @param timeout    the timeout to wait
+     * @param pollingTime the polling time to wait
+     * @return the visible element
+     */
+    public static WebElement waitForElementVisibility(AppiumDriver driver, WebElement element, Duration timeout, Duration pollingTime) {
+        FluentWait<AppiumDriver> wait = new FluentWait<>(driver)
+                .withTimeout(timeout)
+                .pollingEvery(pollingTime)
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(TimeoutException.class)
+                .withMessage("Element not found: " + element);
+
+        return wait.until(d -> {
+            try {
+                WebElement el = ExpectedConditions.visibilityOf(element).apply(d);
+                log.info("Element found: {}", element);
+                return el;
+            } catch (StaleElementReferenceException | TimeoutException e) {
+                log.info("Element not found: {}", element);
+                return null; // Returning null forces FluentWait to retry
+            }
+        });
+    }
+
 }
