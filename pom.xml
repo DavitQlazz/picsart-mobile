@@ -16,10 +16,8 @@
         <testng.version>7.7.1</testng.version>
         <allure.version>2.21.0</allure.version>
         <aspectj.version>1.9.19</aspectj.version>
-        <!--    <runMode>cloud</runMode>-->
         <runMode>local</runMode>
-        <platform>ios</platform>
-        <!--    <platform>android</platform>-->
+        <platform>android</platform>
     </properties>
 
     <dependencies>

@@ -38,49 +38,6 @@ public class WrappedElement extends Widget implements WebElement {
     }
 
 
-    private String getTextWithWait(WebElement element) {
-        wait.until(visibilityOf(element));
-        return element.getText();
-    }
-
-    private void scrollIntoView(WebElement element) {
-        try {
-            driver.executeScript(
-                    "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
-            Thread.sleep(500);
-        } catch (Exception e) {
-            // Ignore scroll errors
-        }
-    }
-
-    // Utility methods
-    public void waitForAttributeValue(String attribute, String value) {
-        wait.until(driver -> {
-            WebElement element = locator.findElement();
-            return Objects.equals(element.getDomAttribute(attribute), value);
-        });
-    }
-
-    public void waitForTextPresent(String text) {
-        wait.until(driver -> {
-            WebElement element = locator.findElement();
-            return element.getText().contains(text);
-        });
-    }
-
-    public boolean waitForElementToDisappear() {
-        try {
-            wait.until(invisibilityOf(locator.findElement()));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public void scrollTo() {
-        scrollIntoView(element);
-    }
-
     @Override
     public void click() {
         log.info("Click if Exists");
@@ -99,8 +56,8 @@ public class WrappedElement extends Widget implements WebElement {
                 WebElement el = visibilityOf(element).apply(driver);
                 log.info("Element found: {}", element);
                 return el;
-            } catch (StaleElementReferenceException e) {
-                log.info("Encountered StaleElementReferenceException. Retrying...");
+            } catch (StaleElementReferenceException | TimeoutException e) {
+                log.info("Element not found: {}", element);
                 return null; // Returning null forces FluentWait to retry
             }
         });
@@ -122,9 +79,10 @@ public class WrappedElement extends Widget implements WebElement {
 
     public boolean isElementExists() {
         try {
-            wait.until(elementToBeClickable(locator.findElement()));
+            wait.until(visibilityOf(locator.findElement()));
             return true;
         } catch (TimeoutException | NoSuchElementException ignored) {
+            log.info("Element not found {}. Skipping click.", locator);
         }
         return false;
     }
@@ -171,7 +129,7 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public String getText() {
-        return getTextWithWait(locator.findElement());
+        return getElement().getText();
     }
 
     @Override
@@ -193,22 +151,22 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public Point getLocation() {
-        return null;
+        return getElement().getLocation();
     }
 
     @Override
     public Dimension getSize() {
-        return null;
+        return getElement().getSize();
     }
 
     @Override
     public Rectangle getRect() {
-        return null;
+        return getElement().getRect();
     }
 
     @Override
     public String getCssValue(String propertyName) {
-        return "";
+        return Objects.requireNonNull(getElement().getDomProperty(propertyName));
     }
 
     @Override

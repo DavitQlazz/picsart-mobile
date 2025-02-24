@@ -75,18 +75,18 @@ public class DriverFactory {
         caps.setAutoWebview(false);
         caps.setFullReset(false);
         caps.setNoReset(false);
+        caps.usePrebuiltWda();
         caps.setCapability("webviewConnectRetries", 3);
         caps.withBrowserName(config.iosBrowser());
         caps.setAutomationName("XCUITest");
         caps.safariIgnoreFraudWarning();
         caps.includeSafariInWebviews();
         caps.setCapability("startIWDP", true);
-        caps.setDeviceName("iPhone 15 Pro");
+        caps.setDeviceName(config.iOSDevice());
         caps.safariIgnoreFraudWarning();
         caps.setPlatformName(Platform.IOS.name());
-        caps.setCapability("platformVersion", "17.4");
+        caps.setPlatformVersion(config.iOSPlatformVersion());
         caps.setNewCommandTimeout(ofSeconds(config.newCommandTimeout()));
-        caps.autoWebview();
 
         HashMap<String, Object> appiumOptions = new HashMap<>();
         appiumOptions.put("appium:recreateChromeDriverSessions", true);
@@ -100,8 +100,8 @@ public class DriverFactory {
         caps.setCapability("browserName", config.androidBrowser());
         bstackOptions.put("osVersion", "13.0");
         bstackOptions.put("deviceName", "Samsung Galaxy S23");
-        bstackOptions.put("userName", "fortesting_AnMoR9");
-        bstackOptions.put("accessKey", "yk1hRvjQjjpKSBRxcqpU");
+        bstackOptions.put("userName", config.bsUsername());
+        bstackOptions.put("accessKey", config.accessKey());
         bstackOptions.put("consoleLogs", "info");
         caps.setCapability("bstack:options", bstackOptions);
         return caps;
@@ -112,16 +112,11 @@ public class DriverFactory {
         caps.setCapability("browserName", config.iosBrowser());
         caps.setCapability("appium:safariOptions", new SafariOptions().setFullReset(true).setNoReset(false));
 
-        HashMap<String, Object> appiumOptions = new HashMap<>();
-        appiumOptions.put("appium:recreateChromeDriverSessions", true);
-        appiumOptions.put("appium:userProfile", 2);
-        caps.setCapability("appium:options", appiumOptions);
-
         HashMap<String, Object> bstackOptions = new HashMap<>();
-        bstackOptions.put("osVersion", "17");
-        bstackOptions.put("deviceName", "iPhone 15 Pro Max");
-        bstackOptions.put("userName", "fortesting_AnMoR9");
-        bstackOptions.put("accessKey", "yk1hRvjQjjpKSBRxcqpU");
+        bstackOptions.put("osVersion", config.iOSPlatformVersion());
+        bstackOptions.put("deviceName", config.iOSDevice());
+        bstackOptions.put("userName", config.bsUsername());
+        bstackOptions.put("accessKey", config.accessKey());
         caps.setCapability("bstack:options", bstackOptions);
         return caps;
     }

@@ -2,7 +2,6 @@ package com.picsart.mobile.appium;
 
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -12,6 +11,7 @@ import java.io.InputStreamReader;
 import java.time.Duration;
 
 import static com.picsart.mobile.driver.DriverFactory.config;
+import static io.appium.java_client.service.local.flags.GeneralServerFlag.*;
 
 @Slf4j
 public class AppiumServerManager {
@@ -21,15 +21,18 @@ public class AppiumServerManager {
         service = new AppiumServiceBuilder()
                 .withIPAddress("127.0.0.1")
                 .withAppiumJS(new File(getAppiumFilePath()))
-                .withArgument(GeneralServerFlag.ALLOW_INSECURE, "chromedriver_autodownload")
-                .withArgument(GeneralServerFlag.RELAXED_SECURITY)
-                .withArgument(GeneralServerFlag.USE_DRIVERS, "chromium,uiautomator2,xcuitest")
-                .withArgument(GeneralServerFlag.SESSION_OVERRIDE)
-                .withArgument(GeneralServerFlag.LOG_LEVEL, "info")
+                .withArgument(ALLOW_INSECURE, "chromedriver_autodownload")
+                .withArgument(RELAXED_SECURITY)
+                .withArgument(USE_DRIVERS, "chromium,uiautomator2,xcuitest")
+                .withArgument(SESSION_OVERRIDE)
+                .withArgument(LOG_LEVEL, "info")
                 .withTimeout(Duration.ofSeconds(config.longTimeout()))
                 .usingAnyFreePort()
                 .build();
-//        service.start();
+        service.start();
+        if (service.isRunning()) {
+            log.info("Appium Server Started at: {}", service.getUrl());
+        }
     }
 
     public static void stopServer() {
@@ -56,6 +59,5 @@ public class AppiumServerManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

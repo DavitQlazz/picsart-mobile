@@ -38,7 +38,7 @@ public class SearchTest extends BaseTest {
                 .clickFilterButton()
                 .clickPlusAsset();
         //Cannot check on iOS simulator
-        assertTrue(searchPage.isPlayStoreDisplayed(), "App Play Store is not displayed");
+        assertTrue(searchPage.isStoreDisplayed(), "The App/Play Store is not displayed");
 
     }
 }

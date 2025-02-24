@@ -34,6 +34,14 @@ public interface ConfigLoader extends Config {
     @DefaultValue("safari")
     String iosBrowser();
 
+    @Key("ios.device.name")
+    @DefaultValue("iPhone 15 Pro")
+    String iOSDevice();
+
+    @Key("ios.platform.version")
+    @DefaultValue("17")
+    String iOSPlatformVersion();
+
     @Key("timeout.long")
     @DefaultValue("30")
     int longTimeout();
@@ -43,7 +51,7 @@ public interface ConfigLoader extends Config {
     int shortTimeout();
 
     @Key("timeout.newCommand")
-    @DefaultValue("8")
+    @DefaultValue("300")
     int newCommandTimeout();
 
     @Key("platform")
@@ -53,4 +61,14 @@ public interface ConfigLoader extends Config {
     @Key("runMode")
     @DefaultValue("local")
     String runMode();
+
+    // Export to your env the Browserstack credentials as "BROWSERSTACK_USERNAME" and "BROWSERSTACK_ACCESSKEY"
+
+    @Key("BROWSERSTACK_USERNAME")
+    @DefaultValue("")
+    String bsUsername();
+
+    @Key("BROWSERSTACK_ACCESSKEY")
+    @DefaultValue("")
+    String accessKey();
 }

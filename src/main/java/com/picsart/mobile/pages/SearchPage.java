@@ -4,12 +4,11 @@ import com.picsart.mobile.element.AndroidBy;
 import com.picsart.mobile.element.IOSBy;
 import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.ios.IOSDriver;
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SearchPage extends BasePage<SearchPage> {
+public class SearchPage extends BasePage {
 
     @AndroidBy(xpath = "//*[@resource-id='filter_icon']")
     @IOSBy(xpath = "//XCUIElementTypeButton[@name='Filter']")
@@ -27,9 +26,7 @@ public class SearchPage extends BasePage<SearchPage> {
     @IOSBy(xpath = "//XCUIElementTypeAny[@value='blur']")
     private WrappedElement plusAssets;
 
-    @AndroidBy(
-            xpath = "//android.view.View[@resource-id=\"__next\"]"
-                    + "/android.view.View[2]/android.view.View/android.view.View[1]/android.widget.Button")
+    @AndroidBy(xpath = "//*[@data-testid='likeComponent']")
     @IOSBy(xpath = "//*[@data-testid='likeComponent']")
     private WrappedElement likeBtn;
 
@@ -37,12 +34,11 @@ public class SearchPage extends BasePage<SearchPage> {
     @IOSBy(xpath = "//*[@data-testid='saved-to-collection']")
     private WrappedElement saveBtn;
 
-    @AndroidBy(xpath = "//android.widget.Button[@text='Edit']")
-    @IOSBy(xpath = "//*[@class='heading-editButtonHolder-0-2-66'] /button")
+    @AndroidBy(xpath = "//button[contains(@class, 'heading-editButton')]")
+    @IOSBy(xpath = "//button[contains(@class, 'heading-editButton')]")
     private WrappedElement editBtn;
 
-    @AndroidBy(
-            xpath = "//android.widget.Button[starts-with(@text, 'Sign in options title Sign in options description')]")
+    @AndroidBy(xpath = "//*[@data-testid='registration-overlay']")
     @IOSBy(xpath = "//*[@data-testid='registration-overlay']")
     private WrappedElement signInPopup;
 
@@ -93,7 +89,7 @@ public class SearchPage extends BasePage<SearchPage> {
     @Step
     public SearchPage closeGoogleSignInPopup() {
         switchToWebView();
-        googleSignInPopupCloseIcon.click();
+        googleSignInPopupCloseIcon.clickIfExists();
         return this;
     }
 
@@ -122,11 +118,5 @@ public class SearchPage extends BasePage<SearchPage> {
         return editBtn.isDisplayed();
     }
 
-    @Step
-    public boolean isPlayStoreDisplayed() {
-        return wait.until(driver -> ((IOSDriver) driver)
-                .queryAppState("com.apple.AppStore")
-                .name()
-                .equalsIgnoreCase("RUNNING_IN_BACKGROUND_SUSPENDED"));
-    }
+
 }
