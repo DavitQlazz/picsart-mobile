@@ -74,7 +74,7 @@ public class MobileExpectedConditions {
                 ApplicationState state = iosDriver.queryAppState(bundleId);
                 log.info("Current state of app {}: {}", bundleId, state.name());
 
-                boolean isSuspended = state == ApplicationState.RUNNING_IN_BACKGROUND_SUSPENDED;
+                boolean isSuspended = state == ApplicationState.RUNNING_IN_FOREGROUND;
                 if (isSuspended) {
                     log.info("App {} is now in {} state.", bundleId, state);
                 }

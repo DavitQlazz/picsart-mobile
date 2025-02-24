@@ -31,7 +31,7 @@ public class AppiumServerManager {
                     .usingAnyFreePort()
                     .build();
             service.start();
-            if (service.isRunning()) {
+            if (service != null && service.isRunning()) {
                 log.info("Appium Server Started at: {}", service.getUrl());
             }
         }
@@ -45,7 +45,7 @@ public class AppiumServerManager {
     }
 
     public static String getAppiumServerUrl() {
-        if (service.isRunning()) {
+        if (service != null && service.isRunning()) {
             return service.getUrl().toString();
         }
         return config.localServer();

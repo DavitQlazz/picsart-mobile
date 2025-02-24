@@ -17,11 +17,13 @@ import static com.picsart.mobile.conditions.MobileExpectedConditions.waitForElem
 import static com.picsart.mobile.driver.DriverFactory.config;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeMoreThan;
 
 @Slf4j
 public class WrappedElement extends Widget implements WebElement {
     private static final Duration DEFAULT_TIMEOUT = ofSeconds(config.longTimeout());
+    private static final Duration SHORT_TIMEOUT = ofSeconds(config.shortTimeout());
     private static final Duration POLLING_TIME = ofMillis(500);
     private final ElementLocator locator;
     private final WebDriverWait wait;
@@ -49,13 +51,18 @@ public class WrappedElement extends Widget implements WebElement {
         return waitForElementVisibility(driver, element, DEFAULT_TIMEOUT, POLLING_TIME);
     }
 
+    public WebElement getElement(Duration timeout) {
+        return waitForElementVisibility(driver, element, timeout, POLLING_TIME);
+    }
+
     public WebElement getByIndex(final int index) {
         return locator.findElements().get(index);
     }
 
     public void clickIfExists() {
+        log.info("Clicking element if exists: {}", locator);
         if (isElementExists()) {
-            locator.findElement().click();
+            getElement(SHORT_TIMEOUT).click();
         }
     }
 
@@ -65,7 +72,7 @@ public class WrappedElement extends Widget implements WebElement {
 
     public boolean isElementExists() {
         try {
-            wait.until(visibilityOf(locator.findElement()));
+            waitForElementVisibility(driver, element, SHORT_TIMEOUT, POLLING_TIME).isDisplayed();
             return true;
         } catch (TimeoutException | NoSuchElementException | StaleElementReferenceException ignored) {
             log.info("Element not found {}. Skipping click.", locator);
@@ -80,8 +87,9 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
+        log.info("Sending keys: {}", keysToSend);
         try {
-            getElement().sendKeys(keysToSend);
+            getElement(SHORT_TIMEOUT).sendKeys(keysToSend);
         } catch (WebDriverException ignore) {
         }
     }
@@ -135,7 +143,8 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public boolean isDisplayed() {
-        return getElement().isDisplayed();
+        log.info("Checking if element is displayed: {}", locator);
+        return getElement(SHORT_TIMEOUT).isDisplayed();
     }
 
     @Override
