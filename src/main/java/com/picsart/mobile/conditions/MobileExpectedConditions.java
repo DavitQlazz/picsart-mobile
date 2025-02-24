@@ -63,7 +63,7 @@ public class MobileExpectedConditions {
      * @return an ExpectedCondition that returns true if the app is in the given state
      */
     public static ExpectedCondition<Boolean> isIosBundleStateEquals(String bundleId, String state) {
-        return new ExpectedCondition<Boolean>() {
+        return new ExpectedCondition<>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 if (!(driver instanceof IOSDriver iosDriver)) {

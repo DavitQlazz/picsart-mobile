@@ -26,7 +26,7 @@ public class AppiumServerManager {
                     .withArgument(RELAXED_SECURITY)
                     .withArgument(USE_DRIVERS, "chromium,uiautomator2,xcuitest")
                     .withArgument(SESSION_OVERRIDE)
-                    .withArgument(LOG_LEVEL, "info")
+                    .withArgument(LOG_LEVEL, "error")
                     .withTimeout(Duration.ofSeconds(config.longTimeout()))
                     .usingAnyFreePort()
                     .build();
