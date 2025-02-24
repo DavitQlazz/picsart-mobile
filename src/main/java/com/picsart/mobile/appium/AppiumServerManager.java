@@ -18,20 +18,22 @@ public class AppiumServerManager {
     private static AppiumDriverLocalService service;
 
     public static void startServer() {
-        service = new AppiumServiceBuilder()
-                .withIPAddress("127.0.0.1")
-                .withAppiumJS(new File(getAppiumFilePath()))
-                .withArgument(ALLOW_INSECURE, "chromedriver_autodownload")
-                .withArgument(RELAXED_SECURITY)
-                .withArgument(USE_DRIVERS, "chromium,uiautomator2,xcuitest")
-                .withArgument(SESSION_OVERRIDE)
-                .withArgument(LOG_LEVEL, "info")
-                .withTimeout(Duration.ofSeconds(config.longTimeout()))
-                .usingAnyFreePort()
-                .build();
-        service.start();
-        if (service.isRunning()) {
-            log.info("Appium Server Started at: {}", service.getUrl());
+        if (config.runMode().equals("local")) {
+            service = new AppiumServiceBuilder()
+                    .withIPAddress("127.0.0.1")
+                    .withAppiumJS(new File(getAppiumFilePath()))
+                    .withArgument(ALLOW_INSECURE, "chromedriver_autodownload")
+                    .withArgument(RELAXED_SECURITY)
+                    .withArgument(USE_DRIVERS, "chromium,uiautomator2,xcuitest")
+                    .withArgument(SESSION_OVERRIDE)
+                    .withArgument(LOG_LEVEL, "info")
+                    .withTimeout(Duration.ofSeconds(config.longTimeout()))
+                    .usingAnyFreePort()
+                    .build();
+            service.start();
+            if (service.isRunning()) {
+                log.info("Appium Server Started at: {}", service.getUrl());
+            }
         }
     }
 
