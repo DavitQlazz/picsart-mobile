@@ -80,7 +80,10 @@ public class WrappedElement extends Widget implements WebElement {
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
-        element.sendKeys(keysToSend);
+        try {
+            getElement().sendKeys(keysToSend);
+        } catch (WebDriverException ignore) {
+        }
     }
 
     @Override

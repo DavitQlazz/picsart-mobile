@@ -6,6 +6,7 @@ import com.picsart.mobile.element.WrappedElement;
 import io.appium.java_client.AppiumDriver;
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.Keys;
 
 @Slf4j
 public class SearchPage extends BasePage {
@@ -46,7 +47,7 @@ public class SearchPage extends BasePage {
     @IOSBy(xpath = "//XCUIElementTypeAny[@value='blur']")
     private WrappedElement playStore;
 
-    @AndroidBy(xpath = "//*[@id='close']")
+    @AndroidBy(xpath = "//*[@id='credential_picker_iframe']")
     @IOSBy(xpath = "//*[@id='credential_picker_iframe']")
     private WrappedElement googleSignInPopupCloseIcon;
 
@@ -89,7 +90,7 @@ public class SearchPage extends BasePage {
     @Step
     public SearchPage closeGoogleSignInPopup() {
         switchToWebView();
-        googleSignInPopupCloseIcon.clickIfExists();
+        googleSignInPopupCloseIcon.sendKeys(Keys.ESCAPE);
         return this;
     }
 
