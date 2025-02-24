@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+import static com.picsart.mobile.conditions.MobileExpectedConditions.waitForElementVisibility;
 import static com.picsart.mobile.driver.DriverFactory.config;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
@@ -46,7 +47,7 @@ public class WrappedElement extends Widget implements WebElement {
     }
 
     public WebElement getElement() {
-        return MobileExpectedConditions.waitForElementVisibility(driver, element, DEFAULT_TIMEOUT, POLLING_TIME);
+        return waitForElementVisibility(driver, element, DEFAULT_TIMEOUT, POLLING_TIME);
     }
 
     public WebElement getByIndex(final int index) {
@@ -67,7 +68,7 @@ public class WrappedElement extends Widget implements WebElement {
         try {
             wait.until(visibilityOf(locator.findElement()));
             return true;
-        } catch (TimeoutException | NoSuchElementException ignored) {
+        } catch (TimeoutException | NoSuchElementException | StaleElementReferenceException ignored) {
             log.info("Element not found {}. Skipping click.", locator);
         }
         return false;
