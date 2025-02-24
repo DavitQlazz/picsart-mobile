@@ -4,6 +4,8 @@ package com.picsart.mobile.tests;
 import com.picsart.mobile.base.BaseTest;
 import com.picsart.mobile.pages.LandingPage;
 import com.picsart.mobile.pages.SearchPage;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -12,7 +14,10 @@ import static org.testng.Assert.assertTrue;
 public class SearchTest extends BaseTest {
     SoftAssert softAssert = new SoftAssert();
 
+
     @Test
+    @Feature("Search")
+    @Description("Verify that search page filter functionality.")
     public void picsartSearchFilter() {
         LandingPage landingPage = new LandingPage(driver);
         SearchPage searchPage = new SearchPage(driver);
