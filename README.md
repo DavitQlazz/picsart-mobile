@@ -22,6 +22,12 @@ This is a Mobile Automation Framework aimed to mobile web testing (hybrid: Nativ
 - Using `@AndroidBy` and `@IOSBy` annotations
 - Using xpath locators for both Android and iOS
 
+## Configuration
+
+- Add BrowserStack credentials to environment variables
+- export **BROWSERSTACK_USERNAME="your_username"**
+- export **BROWSERSTACK_ACCESSKEY="your_access_key"**
+
 ## Installation
 1. Clone the repository:
    ```sh

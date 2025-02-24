@@ -1,6 +1,5 @@
 package com.picsart.mobile.element;
 
-import com.picsart.mobile.conditions.MobileExpectedConditions;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.Widget;
 import lombok.extern.slf4j.Slf4j;
